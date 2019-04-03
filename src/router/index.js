@@ -21,6 +21,7 @@ import Layout from '../views/layout/Layout'
 
 export const constantRouterMap = [
   { path: '/login',
+    meta: { title: '登录', noCache: true },
     component: () => import('@/views/login/index'),
     hidden: true
   },
@@ -33,6 +34,17 @@ export const constantRouterMap = [
     path: '/401',
     component: () => import('@/views/errorPage/401'),
     hidden: true
+  },
+  {
+    path: '/redirect',
+    component: Layout,
+    hidden: true,
+    children: [
+      {
+        path: '/redirect/:path*',
+        component: () => import('@/views/redirect/index')
+      }
+    ]
   },
   {
     path: '/',
