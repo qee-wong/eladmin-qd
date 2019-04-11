@@ -21,9 +21,9 @@
       <el-table-column prop="biaoji" label="标记"/>
       <el-table-column label="操作" width="150px" align="center">
         <template slot-scope="scope">
-          <edit v-if="checkPermission(['ADMIN'])" :data="scope.row" :sup_this="sup_this"/>
+          <edit v-if="checkPermission(['ADMIN','WEIXIN_ALL'])" :data="scope.row" :sup_this="sup_this"/>
           <el-popover
-            v-if="checkPermission(['ADMIN'])"
+            v-if="checkPermission(['ADMIN','WEIXIN_ALL'])"
             :ref="scope.row.id"
             placement="top"
             width="180">
