@@ -3,11 +3,12 @@ import router from '@/router'
 import { Notification, MessageBox } from 'element-ui'
 import store from '../store'
 import { getToken } from '@/utils/auth'
+import Config from '@/config'
 
 // 创建axios实例
 const service = axios.create({
   baseURL: process.env.BASE_API, // api 的 base_url
-  timeout: 900000 // 请求超时时间
+  timeout: Config.timeout // 请求超时时间
 })
 
 // request拦截器
@@ -44,9 +45,16 @@ service.interceptors.response.use(
     try {
       code = error.response.data.status
     } catch (e) {
-      if (error.toString().indexOf('timeout')) {
+      if (error.toString().indexOf('Error: timeout') !== -1) {
         Notification.error({
-          title: '请求超时',
+          title: '网络请求超时',
+          duration: 2500
+        })
+        return Promise.reject(error)
+      }
+      if (error.toString().indexOf('Error: Network Error') !== -1) {
+        Notification.error({
+          title: '网络请求错误',
           duration: 2500
         })
         return Promise.reject(error)

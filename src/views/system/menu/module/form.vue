@@ -18,7 +18,7 @@
         <el-input v-model="form.name" placeholder="名称" style="width: 460px;"/>
       </el-form-item>
       <el-form-item label="菜单排序" prop="sort">
-        <el-input v-model.number="form.sort" placeholder="序号越小越靠前" style="width: 460px;"/>
+        <el-input-number v-model.number="form.sort" :min="0" :max="999" controls-position="right" style="width: 460px;"/>
       </el-form-item>
       <el-form-item label="内部菜单" prop="iframe">
         <el-radio v-model="form.iframe" label="false">是</el-radio>
@@ -42,17 +42,13 @@
 </template>
 
 <script>
-import { add, edit } from '@/api/menu'
+import { add, edit, getMenusTree } from '@/api/menu'
 import Treeselect from '@riophae/vue-treeselect'
 import IconSelect from '@/components/IconSelect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 export default {
   components: { Treeselect, IconSelect },
   props: {
-    menus: {
-      type: Array,
-      required: true
-    },
     isAdd: {
       type: Boolean,
       required: true
@@ -64,7 +60,7 @@ export default {
   },
   data() {
     return {
-      loading: false, dialog: false,
+      loading: false, dialog: false, menus: [],
       form: { name: '', sort: 999, path: '', component: '', iframe: 'false', roles: [], pid: 0, icon: '' },
       rules: {
         name: [
@@ -105,7 +101,6 @@ export default {
         })
         this.loading = false
         this.$parent.$parent.init()
-        this.$parent.$parent.getMenus()
       }).catch(err => {
         this.loading = false
         console.log(err.response.data.message)
@@ -121,7 +116,6 @@ export default {
         })
         this.loading = false
         this.sup_this.init()
-        this.sup_this.getMenus()
       }).catch(err => {
         this.loading = false
         console.log(err.response.data.message)
@@ -134,11 +128,21 @@ export default {
     },
     selected(name) {
       this.form.icon = name
+    },
+    getMenus() {
+      getMenusTree().then(res => {
+        this.menus = []
+        const menu = { id: 0, label: '顶级类目', children: [] }
+        menu.children = res
+        this.menus.push(menu)
+      })
     }
   }
 }
 </script>
 
-<style scoped>
-
+<style rel="stylesheet/scss" lang="scss" scoped>
+  /deep/ .el-input-number .el-input__inner {
+    text-align: left;
+  }
 </style>

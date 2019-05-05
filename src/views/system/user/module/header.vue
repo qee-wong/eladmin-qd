@@ -17,8 +17,8 @@
         size="mini"
         type="primary"
         icon="el-icon-plus"
-        @click="$refs.form.dialog = true">新增</el-button>
-      <eForm ref="form" :roles="roles" :is-add="true"/>
+        @click="add">新增</el-button>
+      <eForm ref="form" :sup_this="sup_this" :is-add="true" :dicts="dicts"/>
     </div>
     <!-- 导出 -->
     <el-button
@@ -40,12 +40,16 @@ import eForm from './form'
 export default {
   components: { eForm },
   props: {
-    roles: {
-      type: Array,
-      required: true
-    },
     query: {
       type: Object,
+      required: true
+    },
+    sup_this: {
+      type: Object,
+      required: true
+    },
+    dicts: {
+      type: Array,
       required: true
     }
   },
@@ -64,10 +68,15 @@ export default {
   },
   methods: {
     checkPermission,
+    add() {
+      this.$refs.form.getDepts()
+      this.$refs.form.getRoles()
+      this.$refs.form.dialog = true
+    },
     // 去查询
     toQuery() {
-      this.$parent.page = 0
-      this.$parent.init()
+      this.sup_this.page = 0
+      this.sup_this.init()
     },
     // 导出
     download() {
@@ -75,7 +84,7 @@ export default {
       import('@/vendor/Export2Excel').then(excel => {
         const tHeader = ['ID', '用户名', '邮箱', '头像地址', '状态', '注册日期', '最后修改密码日期']
         const filterVal = ['id', 'username', 'email', 'avatar', 'enabled', 'createTime', 'lastPasswordResetTime']
-        const data = this.formatJson(filterVal, this.$parent.data)
+        const data = this.formatJson(filterVal, this.sup_this.data)
         excel.export_json_to_excel({
           header: tHeader,
           data,
