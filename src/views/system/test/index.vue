@@ -6,9 +6,13 @@
       <el-table-column prop="employeeid" label="employeeid"/>
       <el-table-column prop="phone" label="电话"/>
       <el-table-column prop="name" label="姓名"/>
-      <el-table-column prop="sign" label="是否签到"/>
+      <!-- <el-table-column prop="sign" label="是否签到"/> -->
       <el-table-column prop="nickname" label="昵称"/>
-      <el-table-column prop="avatarurl" label="avatarurl"/>
+      <el-table-column prop="" label="avatarurl">
+        <template slot-scope="scope">
+          <img :src="scope.row.avatarurl" style="width: 36px;" />
+        </template>
+      </el-table-column>
       <el-table-column prop="gender" label="性别"/>
       <el-table-column prop="openid" label="openid"/>
       <el-table-column prop="updatetime" label="updatetime">
